@@ -1,19 +1,13 @@
 node {
-    stages {
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Building...'
-            }
-        }
-        stage('Deploying') {
-            steps {
-                echo 'Deploying...'
-            }
-        }
-    }
+    stage('Preparation') {
+     checkout scm
+     sh "git rev-parse --short HEAD > .git/commit-id"                        
+     commit_id = readFile('.git/commit-id').trim()
+   }
+   stage('test') {
+     nodejs(nodeJSInstallationName: 'Node-JS') {
+       sh 'npm install --only=dev'
+       sh 'npm test'
+     }
+     }
 }
